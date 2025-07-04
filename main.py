@@ -1,4 +1,5 @@
 from datetime import date
+from typing_extensions import ParamSpecArgs
 
 accounts = ()
 
@@ -23,10 +24,4 @@ class Transaction:
     self.trans_desc = trans_desc
 
 def add_transaction(trans, acc):
-  if trans.acc_id() == acc.acc_id()
-    
-
-
-
-
-
+  pass
