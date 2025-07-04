@@ -1,5 +1,4 @@
 from datetime import date
-from typing_extensions import ParamSpecArgs
 
 accounts = ()
 
@@ -18,7 +17,6 @@ class Transaction:
     self.trans_date = date.today()
     self.trans_num = len(transactions) + 1
     self.acc_id = acc_id
-    self.trans_acc_num = trans_acc_num
     self.debit = debit
     self.credit = credit
     self.trans_desc = trans_desc
