@@ -23,3 +23,5 @@ class Transaction:
 
 def add_transaction(trans, acc):
   pass
+
+new = 0
