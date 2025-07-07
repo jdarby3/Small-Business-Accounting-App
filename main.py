@@ -1,16 +1,18 @@
 from datetime import date
 
-global_transactions = []
+chart_of_accounts = #should hold all accounts in a dict with the acc_id being the
+                          # key and the value being the instance
 
 class Account:
-  def __init__(self, acc_type, acc_balance, acc_id, acc_name):
+  def __init__(self, acc_type, acc_id, acc_name, acc_balance=0):
     self.acc_type = acc_type
     self.acc_balance = acc_balance
     self.acc_id = acc_id
     self.acc_name = acc_name
-    self.transactions = []
+    self.transactions = {}
+    #add code to add each new account to my chart of accounts dict
 
-  def transaction(self, d_c, amount, entity, proj_num, note, date=date.today()):
+  def transaction(self, entry_num, d_c, amount, entity, proj_num, note, date=date.today()):
     # Define the balance change rules
     balance_changes = {
       ("asset", "debit"): amount,
@@ -18,16 +20,17 @@ class Account:
       ("liability", "debit"): -amount,
       ("liability", "credit"): amount
     }
-    
     # Apply the balance change
-    self.acc_balance += balance_changes.get((self.acc_type, d_c), 0)
-    
+    self.acc_balance += balance_changes.get((self.acc_type, d_c))
     # Record the transaction
-    self.transactions.append((d_c, amount, entity, proj_num, note, date))
-    global_transactions.append((d_c, amount, entity, proj_num, note, date))
+    self.transactions[entry_num] = (d_c, amount, entity, proj_num, note, date)
 
-checking = Account("asset", 0, '0001', "Checking")
+def journal_entry(my_csv):
+  for lines in my_csv
+   # chart_of_accounts[acc_id].transaction(mycsv[0] ... etc
+   # for every line calls .transaction on the applicable account
+  pass
 
-checking.transaction("debit", 1000, "John Doe", 1, "Initial balance")
+bv_checking = Account("asset", 1000, "Bluevine Checking")
 
-print(checking.transactions[0][3])
+bv_checking.transaction("debit", 1000, "John Doe", 1, "Initial balance")
