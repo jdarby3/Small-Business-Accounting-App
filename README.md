@@ -1,4 +1,4 @@
-First python project, a work in progress
+First project
 
 Goal is to be able to feed in current ledger, journal and coa all as csv and have them update properly, then be able to display that info in a good UI. Also pull the proper info from these to create financial statements and the UI for those as well
 
