@@ -1,27 +1,33 @@
 from datetime import date
 
-accounts = ()
-
-transactions = ()
+global_transactions = []
 
 class Account:
-  def __init__(self, acc_name, acc_id, acc_type, acc_balance):
-    self.acc_name = acc_name
-    self.acc_id = acc_id
+  def __init__(self, acc_type, acc_balance, acc_id, acc_name):
     self.acc_type = acc_type
     self.acc_balance = acc_balance
-    self.transactions = ()
-
-class Transaction:
-  def __init__(self, trans_date, trans_num, acc_id, debit, credit, trans_desc):
-    self.trans_date = date.today()
-    self.trans_num = len(transactions) + 1
     self.acc_id = acc_id
-    self.debit = debit
-    self.credit = credit
-    self.trans_desc = trans_desc
+    self.acc_name = acc_name
+    self.transactions = []
 
-def add_transaction(trans, acc):
-  pass
+  def transaction(self, d_c, amount, entity, proj_num, note, date=date.today()):
+    # Define the balance change rules
+    balance_changes = {
+      ("asset", "debit"): amount,
+      ("asset", "credit"): -amount,
+      ("liability", "debit"): -amount,
+      ("liability", "credit"): amount
+    }
+    
+    # Apply the balance change
+    self.acc_balance += balance_changes.get((self.acc_type, d_c), 0)
+    
+    # Record the transaction
+    self.transactions.append((d_c, amount, entity, proj_num, note, date))
+    global_transactions.append((d_c, amount, entity, proj_num, note, date))
 
-new = 0
+checking = Account("asset", 0, '0001', "Checking")
+
+checking.transaction("debit", 1000, "John Doe", 1, "Initial balance")
+
+print(checking.transactions[0][3])
