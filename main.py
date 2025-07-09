@@ -1,50 +1,52 @@
 from datetime import date
-import streamlit as st
-import pandas as pd
 
-st.title("Small Business Accounting System")
+accounts = {}
 
-uploaded_file = st.file_uploader("Upload Chart of Accounts", type=['csv', 'xlsx'])
-if uploaded_file is not None:
-    df = pd.read_excel(uploaded_file)
-    st.dataframe(df)
+journal_entries = {}
 
-# the initial ui will prompt user to upload a general journal and chart of accounts
-# or just to add a journal entry or a new account
+transactions = {}
 
-chart_of_accounts = {}
-# can add logic to auto populate this dict from coa excel or csv whenever script is called
+#trans_data will be in form (acc_id, debit, credit)
+def transaction(trans_data):
 
-transaction_tracker = {}
-# updates need to be made to the transaction function to properly populate this
+  trans_acc = accounts[trans_data[0]]
+  debit = accounts[trans_data[1]]
+  credit = accounts[trans_data[2]]
 
+  if trans_acc.acc_type() == 'liability' or 'equity':
+    trans_acc.acc_balance += credit
+    trans_acc.acc_balance -= debit
+  else:
+    trans_acc.acc_balance -= credit
+    trans_acc.acc_balance += debit
+  
 class Account:
-    def __init__(self, acc_type, acc_id, acc_name, acc_balance=0):
-        self.acc_type = acc_type
-        self.acc_balance = acc_balance
-        self.acc_id = acc_id
-        self.acc_name = acc_name
-        self.transactions = {}
-        chart_of_accounts[acc_id] = self
+  def __init__(self, acc_id, acc_type, acc_name, acc_balance=0):
 
-    def transaction(self, entry_num, d_c, amount, entity, proj_num, note, date=date.today()):
-        # Define the balance change rules
-        balance_changes = {
-            ("asset", "debit"): amount,
-            ("asset", "credit"): -amount,
-            ("liability", "debit"): -amount,
-            ("liability", "credit"): amount
-        }
-        # Apply the balance change
-        self.acc_balance += balance_changes.get((self.acc_type, d_c), 0)
-        # Record the transaction
-        self.transactions[entry_num] = (d_c, amount, entity, proj_num, note, date)
+    self.acc_id = acc_id
+    self.acc_type = acc_type
+    self.acc_name = acc_name
+    self.acc_balance = acc_balance
 
-# TODO: Implement journal entry processing
-# def journal_entry(my_csv_file):
-#     # Add logic to process CSV file and create transactions
-#     pass
+    self.transactions = {}
 
-bv_checking = Account("asset", 1000, "Bluevine Checking")
+  accounts[acc_id] = self
 
-# bv_checking.transaction("debit", 1000, "John Doe", 1, "Initial balance")
+class JournalEntry:
+  # entry data will be of form ((trans_data), (trans_data), (trans_data)... etc)
+  def __init__(self, entry_id, entry_data, date=date.today()):
+
+    journal_entries[entry_id] = (self)
+
+    self.entry_id = entry_id
+    self.entry_data = entry_data
+    self.date = date
+
+    for entry in entry_data:
+      transaction(entry)
+
+bv_checking = Account('1000', 'asset', 'bluevine checking', 100)
+
+print(accounts)
+
+entry1 = JournalEntry('0021', (('1000', 0, 40)))
