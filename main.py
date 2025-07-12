@@ -1,56 +1,57 @@
-from datetime import date
+# input:
+#   current general journal + chart of accounts + old ledger
+# output:
+#   new ledger, financial statements, plus graphs and visuals etc...
 
 accounts = {}
 
-journal_entries = {}
-
-transactions = {}
-
-#trans_data will be in form (acc_id, debit, credit)
-def transaction(trans_data, trans_id, trans_self):
-
-  trans_acc = accounts[trans_data[0]]
-  debit = trans_data[1]
-  credit = trans_data[2]
-
-  if trans_acc.acc_type == 'liability' or trans_acc.acc_type == 'equity':
-    trans_acc.acc_balance += credit
-    trans_acc.acc_balance -= debit
-  else:
-    trans_acc.acc_balance -= credit
-    trans_acc.acc_balance += debit  
-  
-  trans_acc.transactions[trans_id] = trans_self
-
 class Account:
-  def __init__(self, acc_id, acc_type, acc_name, acc_balance=0):
+  def __init__(self, id, balance, type = 'asset'):
 
-    accounts[acc_id] = self
+    accounts[id] = self
 
-    self.acc_id = acc_id
-    self.acc_type = acc_type
-    self.acc_name = acc_name
-    self.acc_balance = acc_balance
+    self.id = id
+    self.type = type
+    self.balance = balance
 
-    self.transactions = {}
+    self.transactions = { }
 
-class JournalEntry:
-                # entry data will be of form ((trans_data), (trans_data), (trans_data)... etc)
-  def __init__(self, entry_id, entry_data, date=date.today()):
+  def transact(self, date, entry_num, debit, credit):
 
-    journal_entries[entry_id] = (self)
+    self.transactions[entry_num] = (date, debit, credit)
 
-    self.entry_id = entry_id
-    self.entry_data = entry_data
-    self.date = date
+    if self.type == 'equity' or self.type == 'liability':
 
-    for entry in entry_data:
-      transaction(entry, entry_id, self)
+      self.balance += credit
+      self.balance -= debit
 
-bv_checking = Account('1000', 'asset', 'bluevine checking', 100)
+    else:
 
-# a trailing comma is important for single element journal entries to run correctly, 
-# but this should never happen in real accounting or debits and credits wouldnt be balanced
-entry1 = JournalEntry('0021', (('1000', 0, 40), ))
+      self.balance -= credit
+      self.balance += debit
 
-print(bv_checking.transactions)
+    return None
+
+
+def journal_entry(date, entry_num, entry_data):
+
+  for row in entry_data:  # row will have account, debit, credit
+      
+      accounts[row[0]].transact(date, entry_num, row[1], row[2])
+
+  return None
+
+
+
+
+
+
+# testing
+
+# bvc = Account(123, 0, 'liability')
+
+# print (accounts)
+
+# journal_entry('1/04/2023', 1000, ((123, 0, 20), ))
+
+# print (accounts[123].transactions)
