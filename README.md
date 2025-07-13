@@ -1,4 +1,4 @@
-#Small Business Accounting App
+# Small Business Accounting App
 
 This read me explains the final vision for the repo, not what it currently is.
 
